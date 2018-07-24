@@ -12,8 +12,8 @@ class BTreeNode {
 export default class {
     constructor (source_ar){
         this.root = null;
-        source_ar.forEach(_k => {
-            this.insert(_k, undefined); //value unused for tests
+        source_ar.forEach(_pair => {
+            this.insert(_pair.key, _pair.value);
         });
     }
 
@@ -30,5 +30,31 @@ export default class {
 
         };
         this.root = insertRecursive(this.root);
+    }
+
+    traverse (callback){
+        var traverseRecursive = function (_node) {
+            if(!_node)
+                return;
+            traverseRecursive(_node.left);
+            callback(_node.value);
+            traverseRecursive(_node.right);
+        };
+
+        return traverseRecursive(this.root);
+    }
+
+    search(key){
+        var searchRecursive = function (_node) {
+            if(!_node)
+                return;
+            if(key == _node.key)
+                return _node.value;
+            if(key > _node.key)
+                return searchRecursive(_node.right);
+            else
+                return searchRecursive(_node.left);
+        };
+        return searchRecursive(this.root);
     }
 }
