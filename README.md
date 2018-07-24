@@ -1,0 +1,3 @@
+Just a small collection of ES6 general data structures and sorting algorithms.
+
+Writing this to refresh my memory in preperation for a tech interview...
