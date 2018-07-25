@@ -1,12 +1,6 @@
 class BTreeNode {
     constructor (left, key, value, right, parent){
-        Object.assign(this, {
-            left: left,
-            key: key,
-            value: value,
-            right: right,
-            parent: parent
-        });
+        Object.assign(this, {left, key, value, right, parent});
     }
 
     findMin (){
