@@ -1,5 +1,5 @@
 import test from 'ava';
-import {BinaryTree} from './esm/index';
+import {BinaryTree, AVLTree} from './esm/index';
 import RandomSeed from 'random-seed';
 import DeterministicIdGenerator from './esm/util/deterministic_id';
 
@@ -73,4 +73,11 @@ test('should correctly delete a key and reorganize the tree', (t) => {
     t.falsy(bst.search(lastNode.key), "node is no longer in the tree");
     t.is(bst.root.key, 69, "the trees root node was correctly updated");
 
+});
+
+var avl;
+test('should correctly create a balanced AVL tree from the data', (t) => {
+    t.notThrows(function () {
+        avl = new AVLTree(nodes_ar);
+    });
 });

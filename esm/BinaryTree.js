@@ -1,4 +1,4 @@
-class BTreeNode {
+export class BinaryTreeNode {
     constructor (left, key, value, right, parent){
         Object.assign(this, {left, key, value, right, parent});
     }
@@ -24,9 +24,10 @@ class BTreeNode {
 }
 //Average performance of a Binary tree for search and insert is O(log n);
 //worst case is O(n) if the unbalanced tree becomes a linked list.
-export default class {
-    constructor (source_ar){
+export class BinaryTree{
+    constructor (source_ar, nodeClass=BinaryTreeNode){
         this.root = null;
+        this.nodeClass = nodeClass;
         source_ar.forEach(_pair => {
             this.insert(_pair.key, _pair.value);
         });
@@ -35,7 +36,7 @@ export default class {
     insert (key, value){
         var insertRecursive = (_node, _parent) => {
             if(_node == null)
-                _node = new BTreeNode(null, key, value, null, _parent);
+                _node = new this.nodeClass(null, key, value, null, _parent);
             else if(_node.key == key)
                 _node.value = value;
             else if( key < _node.key)
@@ -59,7 +60,7 @@ export default class {
         return traverseRecursive(this.root);
     }
 
-    search(key){
+    search(key, return_node = false){
         var searchRecursive = function (_node) {
             if(!_node)
                 return;
