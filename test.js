@@ -49,7 +49,7 @@ test('Should return correct value for btree key search', (t) => {
 });
 
 test('traversing the bst should return values in-order sorted by key', t => {
-    var sortedValues = nodes_ar.sort(function (_a, _b) {
+    var sortedValues = nodes_ar.concat().sort(function (_a, _b) {
         return _a.key > _b.key;
     }).map(function (_n) {
         return _n.value;
@@ -61,4 +61,16 @@ test('traversing the bst should return values in-order sorted by key', t => {
     });
 
     t.deepEqual(traversedValues, sortedValues);
+});
+
+test('should correctly delete a key and reorganize the tree', (t) => {
+    var lastNode = nodes_ar[nodes_ar.length - 1];
+    var firstNode = nodes_ar[0]; //is root node
+    bst.delete(lastNode.key);
+    t.is(bst.root.key, 68);
+    bst.delete(firstNode.key);
+
+    t.falsy(bst.search(lastNode.key), "node is no longer in the tree");
+    t.is(bst.root.key, 69, "the trees root node was correctly updated");
+
 });
