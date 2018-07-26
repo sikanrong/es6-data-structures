@@ -87,24 +87,11 @@ test('should correctly create a balanced AVLTree from the data', (t) => {
         avl = new AVLTree(nodes_ar);
     });
 
-    //recursively verify AVL tree is balanced and balanceFactors are correct
-    var verifyNode = function (_n) {
-        if(Math.abs(_n) > 1)
-            return false; //balanceFactor is out of range for an AVL-valid tree
+    t.true(avl.verify());
+});
 
-        var leftHeight = (_n.left)? (_n.left.subtreeHeight + 1) : 0;
-        var rightHeight = (_n.right)? (_n.right.subtreeHeight + 1) : 0;
-
-        if(_n.leftHeavy){
-            return (leftHeight > rightHeight);
-        }else if(_n.balanceFactor == 0){
-            return (leftHeight == rightHeight);
-        }else{ //if(_n.rightHeavy)
-            return (leftHeight < rightHeight);
-        }
-    };
-    
-    avl.traverseNodes(function (_n) {
-        t.true(verifyNode(_n))
-    });
+test("AVLTree should rebalance itself after a deletion leaves it in an AVL-unbalanced state", (t)=>{
+    avl.delete(95);
+    t.falsy(avl.search(95)); //node removed
+    t.true(avl.verify());
 });

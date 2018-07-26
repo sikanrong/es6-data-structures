@@ -128,4 +128,80 @@ export class AVLTree extends BinaryTree{
             }
         }
     }
+    verify() {
+        var all_nodes_valid = true;
+        //recursively verify AVL tree is balanced and balanceFactors are correct
+        var verifyNode = function (_n) {
+            if(Math.abs(_n) > 1)
+                return false; //balanceFactor is out of range for an AVL-valid tree
+
+            var leftHeight = (_n.left)? (_n.left.subtreeHeight + 1) : 0;
+            var rightHeight = (_n.right)? (_n.right.subtreeHeight + 1) : 0;
+
+            if(_n.leftHeavy){
+                return (leftHeight > rightHeight);
+            }else if(_n.balanceFactor == 0){
+                return (leftHeight == rightHeight);
+            }else{ //if(_n.rightHeavy)
+                return (leftHeight < rightHeight);
+            }
+        };
+
+        this.traverseNodes(function (_n) {
+            all_nodes_valid = all_nodes_valid && verifyNode(_n);
+        });
+
+        return all_nodes_valid;
+    }
+
+    delete(key){
+        var deleted = super.delete(key);
+
+        var N = deleted.parent;
+        if(!N){
+            this.root = null;
+            return;
+        }
+        var X;
+        while(X = N.parent){
+            var b, G = X.parent;
+
+            var _dir = N.isLeftChild? 'left' : 'right';
+            var _opp = (_dir == 'left')? 'right' : 'left';
+
+            if( N.isLeftChild && X.rightHeavy ||
+                N.isRightChild && X.leftHeavy ){
+                var Z = X.right;
+                var b = Z.balanceFactor;
+
+                if( N.isLeftChild && Z.leftHeavy ||
+                    N.isRightChild && Z.rightHeavy){
+                    N = AVLTreeNode.padlockRotate(_opp);
+                }else{
+                    N = AVLTreeNode.rotate(_dir);
+                }
+            }else{
+                if(X.balanceFactor == 0){
+                    X.balanceFactor += ((_dir == 'left')? 1 : -1);
+                    break;
+                }
+
+                N = X;
+                N.balanceFactor = 0;
+                continue;
+            }
+
+            N.parent = G;
+            if(G){
+                if(X.isLeftChild)
+                    G.left = N;
+                else
+                    G.right = N;
+                if (b == 0)
+                    break;
+            }else{
+                this.root = N;
+            }
+        }
+    }
 };

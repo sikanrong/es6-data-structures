@@ -140,8 +140,7 @@ export class BinaryTree{
                     this.root = null;
                 _n.replaceWith(null);
             }
-
-
+            return _n; //return deleted node
         }.bind(this);
 
         return deleteRecursive(this.root, key);
