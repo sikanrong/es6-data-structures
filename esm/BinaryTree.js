@@ -21,6 +21,31 @@ export class BinaryTreeNode {
             _n.parent = this.parent;
 
     }
+
+    get hasChildren(){
+        return (this.left || this.right);
+    }
+
+    get subtreeHeight(){
+        var deepest = 0;
+        const countDepthRecursive = (_n, _h = 0) => {
+            if(!_n)
+                return;
+            if(deepest < _h)
+                deepest = _h;
+            if(_n.hasChildren){
+                countDepthRecursive(_n.left, _h + 1);
+                countDepthRecursive(_n.right, _h + 1);
+            }else{
+                return;
+            }
+        };
+
+        countDepthRecursive(this);
+
+        return deepest;
+
+    }
 }
 //Average performance of a Binary tree for search and insert is O(log n);
 //worst case is O(n) if the unbalanced tree becomes a linked list.
@@ -51,16 +76,24 @@ export class BinaryTree{
         return _inserted;
     }
 
-    traverse (callback){
+    traverseNodes (callback){
+        return this.traverse(callback, true);
+    }
+
+    traverse (callback, return_node = false){
         var traverseRecursive = function (_node) {
             if(!_node)
                 return;
             traverseRecursive(_node.left);
-            callback(_node.value);
+            callback(return_node? _node : _node.value);
             traverseRecursive(_node.right);
         };
 
         return traverseRecursive(this.root);
+    }
+
+    searchNode(key){
+        return this.search(key, true);
     }
 
     search(key, return_node = false){

@@ -22,7 +22,7 @@ while(nodes_ar.length < btree_size){
 
 var bst;
 
-test('Should correctly construct a BST from source data', (t) => {
+test('Should correctly construct a BSTree from source data', (t) => {
     t.notThrows(function () {
         bst = new BinaryTree(nodes_ar);
     });
@@ -42,13 +42,13 @@ test('Should correctly construct a BST from source data', (t) => {
     t.true(verifyNode(bst.root));
 });
 
-test('Should return correct value for btree key search', (t) => {
+test('Should return correct value for BSTree key search', (t) => {
     //pick a node and search for its key in the tree
     var searchFor = nodes_ar[nodes_ar.length - 1];
     t.is(bst.search(searchFor.key), searchFor.value);
 });
 
-test('traversing the bst should return values in-order sorted by key', t => {
+test('traversing the BSTree should return values in-order sorted by key', t => {
     var sortedValues = nodes_ar.concat().sort(function (_a, _b) {
         return _a.key > _b.key;
     }).map(function (_n) {
@@ -63,7 +63,7 @@ test('traversing the bst should return values in-order sorted by key', t => {
     t.deepEqual(traversedValues, sortedValues);
 });
 
-test('should correctly delete a key and reorganize the tree', (t) => {
+test('should correctly delete a key and reorganize the BSTree', (t) => {
     var lastNode = nodes_ar[nodes_ar.length - 1];
     var firstNode = nodes_ar[0]; //is root node
     bst.delete(lastNode.key);
@@ -74,7 +74,7 @@ test('should correctly delete a key and reorganize the tree', (t) => {
     t.is(bst.root.key, 69, "the trees root node was correctly updated");
 });
 
-test('insert should correctly insert a node into the binary search tree, and return the inserted node', t => {
+test('insert should correctly insert a node into the BSTree, and return the inserted node', t => {
     var firstNode = nodes_ar[0];
     var inserted = bst.insert(firstNode.key, firstNode.value);
     t.is(inserted.value, firstNode.value);
@@ -82,8 +82,29 @@ test('insert should correctly insert a node into the binary search tree, and ret
 });
 
 var avl;
-test('should correctly create a balanced AVL tree from the data', (t) => {
+test('should correctly create a balanced AVLTree from the data', (t) => {
     t.notThrows(function () {
         avl = new AVLTree(nodes_ar);
+    });
+
+    //recursively verify AVL tree is balanced and balanceFactors are correct
+    var verifyNode = function (_n) {
+        if(Math.abs(_n) > 1)
+            return false; //balanceFactor is out of range for an AVL-valid tree
+
+        var leftHeight = (_n.left)? (_n.left.subtreeHeight + 1) : 0;
+        var rightHeight = (_n.right)? (_n.right.subtreeHeight + 1) : 0;
+
+        if(_n.leftHeavy){
+            return (leftHeight > rightHeight);
+        }else if(_n.balanceFactor == 0){
+            return (leftHeight == rightHeight);
+        }else{ //if(_n.rightHeavy)
+            return (leftHeight < rightHeight);
+        }
+    };
+    
+    avl.traverseNodes(function (_n) {
+        t.true(verifyNode(_n))
     });
 });
