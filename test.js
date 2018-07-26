@@ -4,8 +4,8 @@ import RandomSeed from 'random-seed';
 import DeterministicIdGenerator from './esm/util/deterministic_id';
 
 const determinism_seed = "viscalaterralliure";
-const btree_size = 10; //in nodes
-const node_value_upper = 100;
+const btree_size = 25; //in nodes
+const node_value_upper = 10000000;
 
 var determinism = RandomSeed.create();
 determinism.seed(determinism_seed);
@@ -49,9 +49,11 @@ test('Should return correct value for BSTree key search', (t) => {
 });
 
 test('traversing the BSTree should return values in-order sorted by key', t => {
-    var sortedValues = nodes_ar.concat().sort(function (_a, _b) {
-        return _a.key > _b.key;
-    }).map(function (_n) {
+    var sortedNodes = nodes_ar.concat().sort(function (_a, _b) {
+        return (_a.key > _b.key)? 1 : -1;
+    });
+
+    var sortedValues = sortedNodes.map(function (_n) {
         return _n.value;
     });
 
@@ -67,11 +69,11 @@ test('should correctly delete a key and reorganize the BSTree', (t) => {
     var lastNode = nodes_ar[nodes_ar.length - 1];
     var firstNode = nodes_ar[0]; //is root node
     bst.delete(lastNode.key);
-    t.is(bst.root.key, 68);
+    t.is(bst.root.key, 6875854);
     bst.delete(firstNode.key);
 
     t.falsy(bst.search(lastNode.key), "node is no longer in the tree");
-    t.is(bst.root.key, 69, "the trees root node was correctly updated");
+    t.is(bst.root.key, 6998894, "the trees root node was correctly updated");
 });
 
 test('insert should correctly insert a node into the BSTree, and return the inserted node', t => {
@@ -91,7 +93,11 @@ test('should correctly create a balanced AVLTree from the data', (t) => {
 });
 
 test("AVLTree should rebalance itself after a deletion leaves it in an AVL-unbalanced state", (t)=>{
-    avl.delete(95);
-    t.falsy(avl.search(95)); //node removed
-    t.true(avl.verify());
+    nodes_ar.forEach(function (_n) {
+        avl.delete(_n.key);
+        t.falsy(avl.search(_n.key)); //node removed
+        var _v = avl.verify();
+        t.true(_v);
+    });
+
 });

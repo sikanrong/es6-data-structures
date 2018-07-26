@@ -22,6 +22,13 @@ export class BinaryTreeNode {
 
     }
 
+    get isDetached(){
+        if(!this.parent) //if object has no parent we cannot test if it doesn't belong to parent.
+            return undefined;
+
+        return (!Object.is(this.parent.left, this) && !Object.is(this.parent.right, this));
+    }
+
     get hasChildren(){
         return (this.left || this.right);
     }
@@ -102,7 +109,7 @@ export class BinaryTree{
                 return;
             if(key == _node.key){
                 if(return_node)
-                    return node;
+                    return _node;
                 else
                     return _node.value;
             }
@@ -122,11 +129,13 @@ export class BinaryTree{
             if(_k > _n.key)
                 return deleteRecursive(_n.right, _k);
 
+            var whichChild = (_n.isLeftChild)? 'left' : 'right';
+
             if(_n.left && _n.right){
                 var successor = _n.right.findMin();
                 _n.key = successor.key;
                 _n.value = successor.value;
-                deleteRecursive(successor, successor.key);
+                return deleteRecursive(successor, successor.key);
             }else if (_n.left){
                 if(Object.is(this.root, _n))
                     this.root = _n.left;
@@ -140,7 +149,11 @@ export class BinaryTree{
                     this.root = null;
                 _n.replaceWith(null);
             }
-            return _n; //return deleted node
+
+            return {
+                node: _n,
+                whichChild: whichChild
+            };
         }.bind(this);
 
         return deleteRecursive(this.root, key);

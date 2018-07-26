@@ -41,7 +41,7 @@ AVLTreeNode.rotate = function(direction, X, Z){
     if(Z.balanceFactor == 0){
         X.balanceFactor++;
         Z.balanceFactor--;
-    } {
+    }else{
         X.balanceFactor = 0;
         Z.balanceFactor = 0;
     }
@@ -52,7 +52,7 @@ AVLTreeNode.rotate = function(direction, X, Z){
 //Direction is the first direction. For example if RightLeft, then direction == 'right'
 AVLTreeNode.padlockRotate = function(direction, X, Z){
     var _dir = direction;
-    var _opp = (direction == 'left')? 'right' : 'left';
+    var _opp = (_dir == 'left')? 'right' : 'left';
     var Y = Z[_opp];
     var t3 = Y[_dir];
     Z[_opp] = t3;
@@ -155,34 +155,34 @@ export class AVLTree extends BinaryTree{
     }
 
     delete(key){
-        var deleted = super.delete(key);
+        var del_result = super.delete(key);
+        var X, N = del_result.node, G = N.parent;
+        var whichChild = del_result.whichChild;
+        while(X = G){
+            var b;
+            G = X.parent;
 
-        var N = deleted.parent;
-        if(!N){
-            this.root = null;
-            return;
-        }
-        var X;
-        while(X = N.parent){
-            var b, G = X.parent;
+            var _det = N.isDetached;
+            var _left = (_det)? whichChild == 'left' : N.isLeftChild;
+            var _right = (_det)? whichChild == 'right' : N.isRightChild;
 
-            var _dir = N.isLeftChild? 'left' : 'right';
-            var _opp = (_dir == 'left')? 'right' : 'left';
+            var _dir = (_left)? 'left' : 'right';
+            var _opp = (_left)? 'right' : 'left';
 
-            if( N.isLeftChild && X.rightHeavy ||
-                N.isRightChild && X.leftHeavy ){
-                var Z = X.right;
-                var b = Z.balanceFactor;
+            if( _left && X.rightHeavy ||
+                _right && X.leftHeavy ){
+                var Z = X[_opp];
+                b = Z.balanceFactor;
 
-                if( N.isLeftChild && Z.leftHeavy ||
-                    N.isRightChild && Z.rightHeavy){
-                    N = AVLTreeNode.padlockRotate(_opp);
+                if( _left && Z.leftHeavy ||
+                    _right && Z.rightHeavy){
+                    N = AVLTreeNode.padlockRotate(_opp, X, Z);
                 }else{
-                    N = AVLTreeNode.rotate(_dir);
+                    N = AVLTreeNode.rotate(_dir, X, Z);
                 }
             }else{
                 if(X.balanceFactor == 0){
-                    X.balanceFactor += ((_dir == 'left')? 1 : -1);
+                    X.balanceFactor += ((_left)? 1 : -1);
                     break;
                 }
 
@@ -193,10 +193,12 @@ export class AVLTree extends BinaryTree{
 
             N.parent = G;
             if(G){
-                if(X.isLeftChild)
+                if(X.isLeftChild){
                     G.left = N;
-                else
+                }else{
                     G.right = N;
+                }
+
                 if (b == 0)
                     break;
             }else{
