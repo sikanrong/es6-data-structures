@@ -1,6 +1,7 @@
 export class BinaryTreeNode {
     constructor (left, key, value, right, parent){
         Object.assign(this, {left, key, value, right, parent});
+        this.height = (parent)? parent.height + 1 : 0;
     }
 
     findMin (){
@@ -12,14 +13,16 @@ export class BinaryTreeNode {
     }
 
     replaceWith (_n){
+        var originalHeight = this.height;
         if(this.parent)
             if(this.parent.left == this)
                 this.parent.left = _n;
             else
                 this.parent.right = _n;
-        if(_n)
+        if(_n){
             _n.parent = this.parent;
-
+            _n.height = originalHeight;
+        }
     }
 
     get isDetached(){
@@ -63,6 +66,26 @@ export class BinaryTree{
         source_ar.forEach(_pair => {
             this.insert(_pair.key, _pair.value);
         });
+    }
+
+    verify () {
+        //verify is binary tree.
+        var verifyNode = function(_node){
+            if(!_node)
+                return true;
+            if(
+                (_node.left && _node.left.key > _node.key) ||
+                (_node.right && _node.right.key < _node.key)
+            )
+                return false;
+
+            if(_node.parent && (_node.parent.height + 1) != _node.height)
+                return false;
+
+            return (verifyNode(_node.left) && verifyNode(_node.right));
+        }
+
+        return verifyNode(this.root);
     }
 
     insert (key, value){

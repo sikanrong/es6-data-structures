@@ -27,19 +27,7 @@ test('Should correctly construct a BSTree from source data', (t) => {
         bst = new BinaryTree(nodes_ar);
     });
 
-    //verify is binary tree.
-    var verifyNode = function(_node){
-        if(!_node)
-            return true;
-        if(
-            (_node.left && _node.left.key > _node.key) ||
-            (_node.right && _node.right.key < _node.key)
-        )
-            return false;
-        return (verifyNode(_node.left) && verifyNode(_node.right));
-    }
-
-    t.true(verifyNode(bst.root));
+    t.true(bst.verify());
 });
 
 test('Should return correct value for BSTree key search', (t) => {
@@ -72,6 +60,7 @@ test('should correctly delete a key and reorganize the BSTree', (t) => {
     t.is(bst.root.key, 6875854);
     bst.delete(firstNode.key);
 
+    t.true(bst.verify());
     t.falsy(bst.search(lastNode.key), "node is no longer in the tree");
     t.is(bst.root.key, 6998894, "the trees root node was correctly updated");
 });
@@ -80,6 +69,7 @@ test('insert should correctly insert a node into the BSTree, and return the inse
     var firstNode = nodes_ar[0];
     var inserted = bst.insert(firstNode.key, firstNode.value);
     t.is(inserted.value, firstNode.value);
+    t.true(bst.verify());
     t.is(bst.search(firstNode.key), firstNode.value);
 });
 

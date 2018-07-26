@@ -128,7 +128,11 @@ export class AVLTree extends BinaryTree{
             }
         }
     }
+
     verify() {
+        if(!super.verify())
+            return false;
+
         var all_nodes_valid = true;
         //recursively verify AVL tree is balanced and balanceFactors are correct
         var verifyNode = function (_n) {
