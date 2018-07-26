@@ -51,12 +51,15 @@ test('traversing the BSTree should return values in-order sorted by key', t => {
     });
 
     t.deepEqual(traversedValues, sortedValues);
+    t.true(bst.verify());
 });
 
 test('should correctly delete a key and reorganize the BSTree', (t) => {
     var lastNode = nodes_ar[nodes_ar.length - 1];
     var firstNode = nodes_ar[0]; //is root node
     bst.delete(lastNode.key);
+    t.true(bst.verify());
+
     t.is(bst.root.key, 6875854);
     bst.delete(firstNode.key);
 

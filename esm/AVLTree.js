@@ -139,8 +139,8 @@ export class AVLTree extends BinaryTree{
             if(Math.abs(_n) > 1)
                 return false; //balanceFactor is out of range for an AVL-valid tree
 
-            var leftHeight = (_n.left)? (_n.left.subtreeHeight + 1) : 0;
-            var rightHeight = (_n.right)? (_n.right.subtreeHeight + 1) : 0;
+            var leftHeight = (_n.left)? (_n.left.calculateSubtreeHeight() + 1) : 0;
+            var rightHeight = (_n.right)? (_n.right.calculateSubtreeHeight() + 1) : 0;
 
             if(_n.leftHeavy){
                 return (leftHeight > rightHeight);

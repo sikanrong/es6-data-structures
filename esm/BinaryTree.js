@@ -2,7 +2,14 @@ export class BinaryTreeNode {
     constructor (left, key, value, right, parent){
         Object.assign(this, {left, key, value, right, parent});
         this.height = (parent)? parent.height + 1 : 0;
+        this.subtreeMaxHeight = this.height;
     }
+
+    traverse (callback, return_node) {
+        this.left && this.left.traverse(callback, return_node);
+        callback((return_node)? this : this.value);
+        this.right && this.right.traverse(callback, return_node);
+    };
 
     findMin (){
         var _n = this;
@@ -13,15 +20,24 @@ export class BinaryTreeNode {
     }
 
     replaceWith (_n){
-        var originalHeight = this.height;
-        if(this.parent)
-            if(this.parent.left == this)
+        if(this.parent){
+            if(Object.is(this.parent.left, this))
                 this.parent.left = _n;
             else
                 this.parent.right = _n;
+
+            var __n = this.parent;
+            while(__n){
+                __n.subtreeMaxHeight = (!__n.hasChildren)? __n.height : Math.max((__n.left)? __n.left.subtreeMaxHeight : -1, (__n.right)? __n.right.subtreeMaxHeight : -1);
+                __n = __n.parent; //iterate up to the root;
+            }
+        }
         if(_n){
             _n.parent = this.parent;
-            _n.height = originalHeight;
+            _n.traverse(function (__n) {
+                __n.height--;
+                __n.subtreeMaxHeight--;
+            }, true);
         }
     }
 
@@ -37,6 +53,10 @@ export class BinaryTreeNode {
     }
 
     get subtreeHeight(){
+        return this.subtreeMaxHeight - this.height;
+    }
+
+    calculateSubtreeHeight(){
         var deepest = 0;
         const countDepthRecursive = (_n, _h = 0) => {
             if(!_n)
@@ -54,7 +74,6 @@ export class BinaryTreeNode {
         countDepthRecursive(this);
 
         return deepest;
-
     }
 }
 //Average performance of a Binary tree for search and insert is O(log n);
@@ -70,7 +89,7 @@ export class BinaryTree{
 
     verify () {
         //verify is binary tree.
-        var verifyNode = function(_node){
+        var verifyNode = (_node) => {
             if(!_node)
                 return true;
             if(
@@ -82,6 +101,11 @@ export class BinaryTree{
             if(_node.parent && (_node.parent.height + 1) != _node.height)
                 return false;
 
+            var calculatedSubtreeHeight = _node.calculateSubtreeHeight();
+            if(_node.subtreeHeight != calculatedSubtreeHeight)
+                return false;
+
+
             return (verifyNode(_node.left) && verifyNode(_node.right));
         }
 
@@ -90,9 +114,16 @@ export class BinaryTree{
 
     insert (key, value){
         var _inserted = null;
+        var _insert_path = [];
         var insertRecursive = (_node, _parent) => {
+            if(_node)
+                _insert_path.push(_node);
+
             if(_node == null){
                 _inserted = _node = new this.nodeClass(null, key, value, null, _parent);
+                _insert_path.forEach(function (_p) {
+                    _p.subtreeMaxHeight = Math.max(_p.subtreeMaxHeight, _node.height);
+                });
             }else if(_node.key == key){
                 _node.value = value;
                 _inserted = _node;
@@ -111,15 +142,7 @@ export class BinaryTree{
     }
 
     traverse (callback, return_node = false){
-        var traverseRecursive = function (_node) {
-            if(!_node)
-                return;
-            traverseRecursive(_node.left);
-            callback(return_node? _node : _node.value);
-            traverseRecursive(_node.right);
-        };
-
-        return traverseRecursive(this.root);
+        return this.root.traverse(callback, return_node);
     }
 
     searchNode(key){
@@ -145,7 +168,6 @@ export class BinaryTree{
     }
 
     delete(key){
-
         var deleteRecursive = function (_n, _k) {
             if(_k < _n.key)
                 return deleteRecursive(_n.left, _k);
