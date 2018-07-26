@@ -34,18 +34,21 @@ export class BinaryTree{
     }
 
     insert (key, value){
+        var _inserted = null;
         var insertRecursive = (_node, _parent) => {
-            if(_node == null)
-                _node = new this.nodeClass(null, key, value, null, _parent);
-            else if(_node.key == key)
+            if(_node == null){
+                _inserted = _node = new this.nodeClass(null, key, value, null, _parent);
+            }else if(_node.key == key){
                 _node.value = value;
-            else if( key < _node.key)
+                _inserted = _node;
+            }else if( key < _node.key)
                 _node.left = insertRecursive(_node.left, _node);
             else
                 _node.right = insertRecursive(_node.right, _node);
             return _node;
         };
         this.root = insertRecursive(this.root);
+        return _inserted;
     }
 
     traverse (callback){
@@ -64,8 +67,12 @@ export class BinaryTree{
         var searchRecursive = function (_node) {
             if(!_node)
                 return;
-            if(key == _node.key)
-                return _node.value;
+            if(key == _node.key){
+                if(return_node)
+                    return node;
+                else
+                    return _node.value;
+            }
             if(key > _node.key)
                 return searchRecursive(_node.right);
             else

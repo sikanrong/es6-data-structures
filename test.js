@@ -72,7 +72,13 @@ test('should correctly delete a key and reorganize the tree', (t) => {
 
     t.falsy(bst.search(lastNode.key), "node is no longer in the tree");
     t.is(bst.root.key, 69, "the trees root node was correctly updated");
+});
 
+test('insert should correctly insert a node into the binary search tree, and return the inserted node', t => {
+    var firstNode = nodes_ar[0];
+    var inserted = bst.insert(firstNode.key, firstNode.value);
+    t.is(inserted.value, firstNode.value);
+    t.is(bst.search(firstNode.key), firstNode.value);
 });
 
 var avl;
