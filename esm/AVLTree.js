@@ -41,7 +41,6 @@ AVLTreeNode.rotate = function(direction, X, Z){
     X.parent = Z;
 
     if(Z.balanceFactor == 0){
-        X.balanceFactor += (_left)? 1 : -1;
         Z.balanceFactor += (_left)? -1 : 1;
     }else{
         X.balanceFactor = 0;
@@ -80,7 +79,7 @@ AVLTreeNode.padlockRotate = function(direction, X, Z){
         X.balanceFactor = 0;
         Z.balanceFactor = 0;
     }else{
-        X.balanceFactor += (_left)? -2 : 2;
+        X.balanceFactor += (_left)? 2 : -2;
         Z.balanceFactor = 0;
     }
     Y.balanceFactor = 0;
@@ -90,6 +89,29 @@ AVLTreeNode.padlockRotate = function(direction, X, Z){
 export class AVLTree extends BinaryTree{
     constructor (source_ar){
         super(source_ar, AVLTreeNode);
+    }
+
+    verify() {
+        if(!super.verify())
+            return false;
+
+        var all_nodes_valid = true;
+        //recursively verify AVL tree is balanced and balanceFactors are correct
+        var verifyNode = function (_n) {
+            if(Math.abs(_n) > 1)
+                return false; //balanceFactor is out of range for an AVL-valid tree
+
+            var leftHeight = (_n.left)? (_n.left.calculateSubtreeHeight() + 1) : 0;
+            var rightHeight = (_n.right)? (_n.right.calculateSubtreeHeight() + 1) : 0;
+
+            return _n.balanceFactor == (rightHeight - leftHeight);
+        };
+
+        this.traverseNodes(function (_n) {
+            all_nodes_valid = all_nodes_valid && verifyNode(_n);
+        });
+
+        return all_nodes_valid;
     }
 
     insert (key, value){
@@ -133,29 +155,6 @@ export class AVLTree extends BinaryTree{
                 break;
             }
         }
-    }
-
-    verify() {
-        if(!super.verify())
-            return false;
-
-        var all_nodes_valid = true;
-        //recursively verify AVL tree is balanced and balanceFactors are correct
-        var verifyNode = function (_n) {
-            if(Math.abs(_n) > 1)
-                return false; //balanceFactor is out of range for an AVL-valid tree
-
-            var leftHeight = (_n.left)? (_n.left.calculateSubtreeHeight() + 1) : 0;
-            var rightHeight = (_n.right)? (_n.right.calculateSubtreeHeight() + 1) : 0;
-
-            return _n.balanceFactor == (rightHeight - leftHeight);
-        };
-
-        this.traverseNodes(function (_n) {
-            all_nodes_valid = all_nodes_valid && verifyNode(_n);
-        });
-
-        return all_nodes_valid;
     }
 
     delete(key){
