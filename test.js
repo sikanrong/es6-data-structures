@@ -1,5 +1,5 @@
 import test from 'ava';
-import {BinaryTree, AVLTree} from './esm/index';
+import {BinaryTree, AVLTree, LinkedList} from './esm/index';
 import RandomSeed from 'random-seed';
 import DeterministicIdGenerator from './esm/util/deterministic_id';
 
@@ -98,5 +98,31 @@ test("AVLTree should rebalance itself after a deletion leaves it in an AVL-unbal
         var _v = avl.verify();
         t.true(_v);
     });
+});
 
+var ll;
+var ll_values = nodes_ar.map(_n => {return _n.value});
+test("Should correctly build a LinkedList", (t) => {
+    t.notThrows(function () {
+        ll = new LinkedList(ll_values);
+    }.bind(this));
+
+    var _a = [];
+    var _n = ll.root;
+    while(_n = _n.next)
+        if(!Object.is(_n, ll.tail))
+            _a.push(_n.data);
+
+    t.deepEqual(_a, ll_values);
+});
+
+test("should find a node in the LinkedList", (t) => {
+    var _v = ll_values[ll_values.length - 1];
+    t.is(ll.search(_v).data, _v);
+});
+
+test("should iterate through the array and include all items in the LinkedList", (t) => {
+    var iter_a = [];
+    ll.iterate((_n) => {iter_a.push(_n.data)});
+    t.deepEqual(iter_a, ll_values);
 });
