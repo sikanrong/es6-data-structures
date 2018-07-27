@@ -1,8 +1,6 @@
 export class BinaryTreeNode {
     constructor (left, key, value, right, parent){
         Object.assign(this, {left, key, value, right, parent});
-        this.height = (parent)? parent.height + 1 : 0;
-        this.subtreeMaxHeight = this.height;
     }
 
     traverse (callback, return_node) {
@@ -25,20 +23,9 @@ export class BinaryTreeNode {
                 this.parent.left = _n;
             else
                 this.parent.right = _n;
-
-            var __n = this.parent;
-            while(__n){
-                __n.subtreeMaxHeight = (!__n.hasChildren)? __n.height : Math.max((__n.left)? __n.left.subtreeMaxHeight : -1, (__n.right)? __n.right.subtreeMaxHeight : -1);
-                __n = __n.parent; //iterate up to the root;
-            }
         }
-        if(_n){
+        if(_n)
             _n.parent = this.parent;
-            _n.traverse(function (__n) {
-                __n.height--;
-                __n.subtreeMaxHeight--;
-            }, true);
-        }
     }
 
     get isDetached(){
@@ -52,9 +39,6 @@ export class BinaryTreeNode {
         return (this.left || this.right);
     }
 
-    get subtreeHeight(){
-        return this.subtreeMaxHeight - this.height;
-    }
 
     calculateSubtreeHeight(){
         var deepest = 0;
@@ -98,14 +82,6 @@ export class BinaryTree{
             )
                 return false;
 
-            if(_node.parent && (_node.parent.height + 1) != _node.height)
-                return false;
-
-            var calculatedSubtreeHeight = _node.calculateSubtreeHeight();
-            if(_node.subtreeHeight != calculatedSubtreeHeight)
-                return false;
-
-
             return (verifyNode(_node.left) && verifyNode(_node.right));
         }
 
@@ -121,16 +97,13 @@ export class BinaryTree{
 
             if(_node == null){
                 _inserted = _node = new this.nodeClass(null, key, value, null, _parent);
-                _insert_path.forEach(function (_p) {
-                    _p.subtreeMaxHeight = Math.max(_p.subtreeMaxHeight, _node.height);
-                });
             }else if(_node.key == key){
                 _node.value = value;
                 _inserted = _node;
-            }else if( key < _node.key)
-                _node.left = insertRecursive(_node.left, _node);
-            else
-                _node.right = insertRecursive(_node.right, _node);
+            }else{
+                var _dir = ( key < _node.key)? 'left' : 'right';
+                _node[_dir] = insertRecursive(_node[_dir], _node);
+            }
             return _node;
         };
         this.root = insertRecursive(this.root);
