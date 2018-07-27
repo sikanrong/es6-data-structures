@@ -84,6 +84,10 @@ test('should correctly create a balanced AVLTree from the data', (t) => {
         t.true(_v);
     });
 
+    t.notThrows(function () {
+       avl = new AVLTree(nodes_ar);
+    });
+
     t.true(avl.verify());
 });
 

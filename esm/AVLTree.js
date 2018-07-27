@@ -29,7 +29,9 @@ export class AVLTreeNode extends BinaryTreeNode {
 
 AVLTreeNode.rotate = function(direction, X, Z){
     var _dir = direction;
-    var _opp = (direction == 'left')? 'right' : 'left';
+    var _opp = (_dir == 'left')? 'right' : 'left';
+    var _left = (_dir == 'left');
+    var _right = !_left;
 
     var t23 = Z[_dir];
     X[_opp] = t23;
@@ -39,8 +41,8 @@ AVLTreeNode.rotate = function(direction, X, Z){
     X.parent = Z;
 
     if(Z.balanceFactor == 0){
-        X.balanceFactor++;
-        Z.balanceFactor--;
+        X.balanceFactor += (_left)? 1 : -1;
+        Z.balanceFactor += (_left)? -1 : 1;
     }else{
         X.balanceFactor = 0;
         Z.balanceFactor = 0;
@@ -195,7 +197,7 @@ export class AVLTree extends BinaryTree{
 
             N.parent = G;
             if(G){
-                if(X.isLeftChild){
+                if(Object.is(G.left, X)){
                     G.left = N;
                 }else{
                     G.right = N;

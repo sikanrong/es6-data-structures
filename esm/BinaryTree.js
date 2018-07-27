@@ -115,6 +115,8 @@ export class BinaryTree{
     }
 
     traverse (callback, return_node = false){
+        if(!this.root)
+            return;
         return this.root.traverse(callback, return_node);
     }
 
