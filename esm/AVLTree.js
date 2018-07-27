@@ -53,6 +53,9 @@ AVLTreeNode.rotate = function(direction, X, Z){
 AVLTreeNode.padlockRotate = function(direction, X, Z){
     var _dir = direction;
     var _opp = (_dir == 'left')? 'right' : 'left';
+    var _left = _dir == 'left';
+    var _right = !_left;
+
     var Y = Z[_opp];
     var t3 = Y[_dir];
     Z[_opp] = t3;
@@ -67,15 +70,16 @@ AVLTreeNode.padlockRotate = function(direction, X, Z){
     Y[_opp] = X;
     X.parent = Y;
 
-    if(Y.balanceFactor > 0){
-        X.balanceFactor--;
-        Z.balanceFactor = 0;
+    if( _right && Y.leftHeavy ||
+        _left && Y.rightHeavy){
+        X.balanceFactor = 0;
+        Z.balanceFactor += (_left)? -2 : 2;
     }else if(Y.balanceFactor == 0){
         X.balanceFactor = 0;
         Z.balanceFactor = 0;
     }else{
-        X.balanceFactor = 0;
-        Z.balanceFactor++;
+        X.balanceFactor += (_left)? -2 : 2;
+        Z.balanceFactor = 0;
     }
     Y.balanceFactor = 0;
     return Y;
@@ -142,13 +146,7 @@ export class AVLTree extends BinaryTree{
             var leftHeight = (_n.left)? (_n.left.calculateSubtreeHeight() + 1) : 0;
             var rightHeight = (_n.right)? (_n.right.calculateSubtreeHeight() + 1) : 0;
 
-            if(_n.leftHeavy){
-                return (leftHeight > rightHeight);
-            }else if(_n.balanceFactor == 0){
-                return (leftHeight == rightHeight);
-            }else{ //if(_n.rightHeavy)
-                return (leftHeight < rightHeight);
-            }
+            return _n.balanceFactor == (rightHeight - leftHeight);
         };
 
         this.traverseNodes(function (_n) {

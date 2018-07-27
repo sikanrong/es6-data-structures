@@ -76,10 +76,12 @@ test('insert should correctly insert a node into the BSTree, and return the inse
     t.is(bst.search(firstNode.key), firstNode.value);
 });
 
-var avl;
+var avl = new AVLTree([]);
 test('should correctly create a balanced AVLTree from the data', (t) => {
-    t.notThrows(function () {
-        avl = new AVLTree(nodes_ar);
+    nodes_ar.forEach(function (_n) {
+        avl.insert(_n.key, _n.value);
+        var _v = avl.verify();
+        t.true(_v);
     });
 
     t.true(avl.verify());

@@ -79,9 +79,9 @@ export class BinaryTree{
             if(
                 (_node.left && _node.left.key > _node.key) ||
                 (_node.right && _node.right.key < _node.key)
-            )
+            ){
                 return false;
-
+            }
             return (verifyNode(_node.left) && verifyNode(_node.right));
         }
 
