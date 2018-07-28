@@ -177,5 +177,30 @@ test("Should construct a DoublyLinkedList from the test data", t => {
     t.notThrows(function () {
         dll = new DoublyLinkedList(ll_values);
     });
+
+    var _a = [];
+    dll.iterate(_n => {_a.push(_n)});
+    t.deepEqual(_a.map(_n => {return _n.data}), ll_values);
 });
 
+test("DoublyLinkedList should be able to iterate backwards through the array", t => {
+    var _a = [];
+    dll.reverseIterate(_n => {_a.push(_n)});
+    t.deepEqual(_a.map(_n => {return _n.data}), ll_values.concat().reverse());
+});
+
+test("DoublyLinkedList should be able to remove an element and reappend it to the tail; always maintaining prev and next links", t => {
+    var last_val = ll_values[ll_values.length - 1];
+    var _removed = dll.remove(last_val);
+    t.is(last_val, _removed.data);
+    t.falsy(dll.search(last_val));
+    var _n = dll.append(last_val);
+    t.is(_n.prev, _removed.prev);
+    t.is(_n.next, dll.tail);
+    t.truthy(dll.search(last_val));
+});
+
+test("DoublyLinkedList should return node of searched item", t => {
+    var middle_val = ll_values[Math.floor(ll_values.length / 2)];
+    t.is(dll.search(middle_val).data, middle_val);
+});

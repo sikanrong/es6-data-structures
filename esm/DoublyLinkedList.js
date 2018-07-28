@@ -39,10 +39,28 @@ export  class DoublyLinkedList extends LinkedList{
         }while(_n = _n.next);
     }
 
+    //O(n/2) time
+    search(data) {
+        var recursiveSearch = function(left, right){
+            if(Object.is(left.data, data))
+                return left;
+            else if(Object.is(right.data, data))
+                return right;
+            else if(left == right)
+                return;
+            else
+                return recursiveSearch(left.next, right.prev);
+        };
+
+        return recursiveSearch(this.root, this.tail);
+    }
+
+    //O(n/2) worst-case time to find the node. The actual removal operation is O(1);
     remove(data) {
-        var _removed = super.remove(data);
-        _removed.next.prev = _removed.prev;
-        return _removed;
+        var _n = this.search(data);
+        _n.prev.next = _n.next;
+        _n.next.prev = _n.prev;
+        return _n;
     }
 
     unshift(data) {
@@ -55,7 +73,16 @@ export  class DoublyLinkedList extends LinkedList{
     append(data) {
         var _n = new DoublyLinkedListNode(data, this.tail, this.tail.prev);
         this.tail.prev.next = _n;
-        thi.tail.prev = _n;
+        this.tail.prev = _n;
         return _n;
+    }
+
+    reverseIterate(callback){
+        var _n = this.tail;
+        while(_n = _n.prev){
+            if(!(_n instanceof DoublyLinkedSentinelNode)){
+                callback(_n);
+            }
+        }
     }
 }
