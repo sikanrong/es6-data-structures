@@ -126,3 +126,25 @@ test("should iterate through the array and include all items in the LinkedList",
     ll.iterate((_n) => {iter_a.push(_n.data)});
     t.deepEqual(iter_a, ll_values);
 });
+
+var sampleData = "BADF00D";
+test("should append a node to the tail of the LinkedList", (t) => {
+    var _n = ll.append(sampleData);
+    t.is(_n.next, ll.tail);
+
+    t.is(ll.search(sampleData), _n);
+});
+
+test("should remove a node from the LinkedList", (t) => {
+    ll.remove(sampleData);
+    t.falsy(ll.search(sampleData));
+
+    t.notThrows(function () {
+        ll.remove(sampleData); //remove already-removed node
+    });
+});
+
+test("Should unshift a node to the LinkedList (add to the front)", t => {
+   var _n = ll.unshift(sampleData);
+   t.is(ll.root.next, _n);
+});

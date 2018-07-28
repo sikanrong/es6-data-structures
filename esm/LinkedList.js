@@ -9,20 +9,21 @@ export class LinkedListNode {
     }
 }
 
-export class SentinelNode extends LinkedListNode{
-    constructor(data, next, type){
-        super(data, next);
+export const LinkedSentinelNode = (parentClass) => class extends parentClass{
+    constructor(type, next){
+        super(null, next);
         this.type = type;
     }
 }
 
-SentinelNode.TYPE_START = 0;
-SentinelNode.TYPE_END = 0;
+LinkedSentinelNode.TYPE_START = 0;
+LinkedSentinelNode.TYPE_END = 1;
 
 export class LinkedList {
-    constructor (fromArray) {
-        this.tail = new SentinelNode(null, null, SentinelNode.TYPE_END);
-        this.root = new SentinelNode(null, this.tail, SentinelNode.TYPE_START);
+    constructor (fromArray, sentinelClass = LinkedSentinelNode(LinkedListNode)) {
+        this.sentinelClass = sentinelClass;
+        this.tail = new this.sentinelClass( LinkedSentinelNode.TYPE_END, null );
+        this.root = new this.sentinelClass( LinkedSentinelNode.TYPE_START, this.tail );
 
         //Construct a list from a passed array
         if(fromArray)
@@ -42,14 +43,29 @@ export class LinkedList {
     }
 
     //O(n) performance :(
-    addNode (data){
+    append (data){
         var _n = this.root;
         while(_n = _n.next){
             if(Object.is(_n.next, this.tail)){
-                _n.setNext(new LinkedListNode(data, this.tail));
-                break;
+                var _nn = new LinkedListNode(data, this.tail);
+                _n.setNext(_nn);
+                return _nn;
             }
         }
+    }
+
+    unshift (data){
+        return this.root.next = new LinkedListNode(data, this.root.next);
+    }
+
+    remove (data) {
+        var _n = this.root;
+        while(_n = _n.next)
+            if(!Object.is(this.tail, _n) && Object.is(data, _n.next.data)){
+                _n.next = _n.next.next; //deleted
+                return true;
+            }
+        return false;
     }
 
     //O(n) performance :(
