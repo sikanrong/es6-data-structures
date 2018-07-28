@@ -217,5 +217,13 @@ test("BinaryHeap should rebalance after insert", t => {
     var new_key = heap.heapArray[0] + 1;
     heap.insert(new_key);
     t.true(heap.verify());
-    t.is(heap.heapArray[0], new_key);
+    t.is(heap.heapArray[0], new_key, "new key bubbled up to the top of the heap");
+});
+
+test("BinaryHeap#delete should rebalance after insert", t => {
+    var toRemove = Math.floor(heap.heapArray.length / 2);
+    var removedValue = heap.heapArray[toRemove];
+    heap.remove(toRemove);
+    t.is(-1, heap.heapArray.indexOf(removedValue));
+    t.true(heap.verify());
 });

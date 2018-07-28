@@ -54,13 +54,22 @@ export class BinaryHeap{
         return rebalanceRecursive(fromNode);
     }
 
+    rebalanceUpFrom(p){
+        while(p !== undefined){
+            this.rebalance(p);
+            p = (p === 0)? undefined : this.parentIndex(p);
+        }
+    }
+
+    remove(p){
+        this.heapArray[p] = this.heapArray.pop();
+        this.rebalanceUpFrom(p);
+    }
+
     insert(n) {
         this.heapArray.push(n);
-        var p = this.heapArray.length - 1;
-        do{
-            p = this.parentIndex(p);
-            this.rebalance(p);
-        }while(p) //will stop at 0
+        this.rebalanceUpFrom(this.heapArray.length - 1);
+
     }
 
     rightChildIndex(index) {
