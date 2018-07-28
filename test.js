@@ -1,5 +1,5 @@
 import test from 'ava';
-import {BinaryTree, AVLTree, LinkedList, DoublyLinkedList} from './esm/index';
+import {BinaryTree, AVLTree, LinkedList, DoublyLinkedList, BinaryHeap} from './esm/index';
 import RandomSeed from 'random-seed';
 import DeterministicIdGenerator from './esm/util/deterministic_id';
 
@@ -21,7 +21,6 @@ while(nodes_ar.length < btree_size){
 }
 
 var bst;
-
 test('Should correctly construct a BSTree from source data', (t) => {
     t.notThrows(function () {
         bst = new BinaryTree(nodes_ar);
@@ -203,4 +202,20 @@ test("DoublyLinkedList should be able to remove an element and reappend it to th
 test("DoublyLinkedList should return node of searched item", t => {
     var middle_val = ll_values[Math.floor(ll_values.length / 2)];
     t.is(dll.search(middle_val).data, middle_val);
+});
+
+var heap, heap_keys = nodes_ar.map(_n => {return _n.key});
+test("BinaryHeap should correctly organize itself into a valid state", t => {
+    t.notThrows(() => {
+        heap = new BinaryHeap(heap_keys);
+    });
+
+    t.true(heap.verify());
+});
+
+test("BinaryHeap should rebalance after insert", t => {
+    var new_key = heap.heapArray[0] + 1;
+    heap.insert(new_key);
+    t.true(heap.verify());
+    t.is(heap.heapArray[0], new_key);
 });
