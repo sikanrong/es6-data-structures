@@ -7,6 +7,16 @@ export class LinkedListNode {
     setNext(_n){
         this.next = _n;
     }
+
+    insertAfter(_n){
+        var _next = this.next;
+        this.next = (_n.type == LinkedSentinelNode.TYPE_START)? _n.next : _n;
+        do{
+            if(_n.next == null || _n.next.type == LinkedSentinelNode.TYPE_END)
+                break;
+        }while(_n = _n.next);
+        _n.next = _next;
+    }
 }
 
 export const LinkedSentinelNode = (parentClass) => class extends parentClass{
@@ -55,16 +65,20 @@ export class LinkedList {
     }
 
     unshift (data){
-        return this.root.next = new LinkedListNode(data, this.root.next);
+        var _n = new LinkedListNode(data, this.root.next);
+        this.root.next = _n;
+        return _n;
     }
 
     remove (data) {
         var _n = this.root;
-        while(_n = _n.next)
-            if(!Object.is(this.tail, _n) && Object.is(data, _n.next.data)){
+        do{
+            if(_n.next && Object.is(data, _n.next.data)){
                 _n.next = _n.next.next; //deleted
                 return true;
             }
+        }while(_n = _n.next)
+
         return false;
     }
 

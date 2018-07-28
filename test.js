@@ -128,11 +128,13 @@ test("should iterate through the array and include all items in the LinkedList",
 });
 
 var sampleData = "BADF00D";
-test("should append a node to the tail of the LinkedList", (t) => {
-    var _n = ll.append(sampleData);
-    t.is(_n.next, ll.tail);
 
+test("Should unshift a node to the LinkedList (add to the front)", t => {
+    var _f = ll.root.next;
+    var _n = ll.unshift(sampleData);
     t.is(ll.search(sampleData), _n);
+    t.is(ll.root.next, _n);
+    t.is(_n.next, _f);
 });
 
 test("should remove a node from the LinkedList", (t) => {
@@ -142,9 +144,30 @@ test("should remove a node from the LinkedList", (t) => {
     t.notThrows(function () {
         ll.remove(sampleData); //remove already-removed node
     });
+
+    t.notThrows(function () {
+        ll.iterate(function () {
+            //do nothing
+        });
+    });
 });
 
-test("Should unshift a node to the LinkedList (add to the front)", t => {
-   var _n = ll.unshift(sampleData);
-   t.is(ll.root.next, _n);
+test("should append a node to the tail of the LinkedList", (t) => {
+    var _n = ll.append(sampleData);
+    t.is(_n.next, ll.tail);
+
+    t.is(ll.search(sampleData), _n);
 });
+
+test("LinkedListNode#insertAfter should let me splice in another LinkedList nodeChain into the existing list", (t) => {
+    var _n = ll.search(sampleData);
+    var data_ar = ['a', 'b', 'c'];
+    _n.insertAfter(new LinkedList(data_ar).root);
+    var _a = [];
+    while(_n = _n.next){
+        _a.push(_n.data);
+    }
+
+    t.deepEqual(_a, data_ar.concat([null]));
+});
+
