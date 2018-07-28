@@ -30,7 +30,8 @@ LinkedSentinelNode.TYPE_START = 0;
 LinkedSentinelNode.TYPE_END = 1;
 
 export class LinkedList {
-    constructor (fromArray, sentinelClass = LinkedSentinelNode(LinkedListNode)) {
+    constructor (fromArray, nodeClass = LinkedListNode, sentinelClass = LinkedSentinelNode(LinkedListNode)) {
+        this.nodeClass = nodeClass;
         this.sentinelClass = sentinelClass;
         this.tail = new this.sentinelClass( LinkedSentinelNode.TYPE_END, null );
         this.root = new this.sentinelClass( LinkedSentinelNode.TYPE_START, this.tail );
@@ -46,7 +47,7 @@ export class LinkedList {
             var _d = _a.shift();
             if(!_d)
                 return this.tail;
-            return new LinkedListNode(_d, recursiveAdd(_a))
+            return new this.nodeClass(_d, recursiveAdd(_a))
         }.bind(this);
 
         this.root.setNext(recursiveAdd(data_ar.concat()));
@@ -57,7 +58,7 @@ export class LinkedList {
         var _n = this.root;
         while(_n = _n.next){
             if(Object.is(_n.next, this.tail)){
-                var _nn = new LinkedListNode(data, this.tail);
+                var _nn = new this.nodeClass(data, this.tail);
                 _n.setNext(_nn);
                 return _nn;
             }
@@ -65,7 +66,7 @@ export class LinkedList {
     }
 
     unshift (data){
-        var _n = new LinkedListNode(data, this.root.next);
+        var _n = new this.nodeClass(data, this.root.next);
         this.root.next = _n;
         return _n;
     }
@@ -74,12 +75,11 @@ export class LinkedList {
         var _n = this.root;
         do{
             if(_n.next && Object.is(data, _n.next.data)){
+                var removed = _n.next;
                 _n.next = _n.next.next; //deleted
-                return true;
+                return removed;
             }
         }while(_n = _n.next)
-
-        return false;
     }
 
     //O(n) performance :(

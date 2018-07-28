@@ -1,5 +1,5 @@
 import test from 'ava';
-import {BinaryTree, AVLTree, LinkedList} from './esm/index';
+import {BinaryTree, AVLTree, LinkedList, DoublyLinkedList} from './esm/index';
 import RandomSeed from 'random-seed';
 import DeterministicIdGenerator from './esm/util/deterministic_id';
 
@@ -169,5 +169,13 @@ test("LinkedListNode#insertAfter should let me splice in another LinkedList node
     }
 
     t.deepEqual(_a, data_ar.concat([null]));
+});
+
+var dll;
+
+test("Should construct a DoublyLinkedList from the test data", t => {
+    t.notThrows(function () {
+        dll = new DoublyLinkedList(ll_values);
+    });
 });
 
