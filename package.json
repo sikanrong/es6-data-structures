@@ -1,11 +1,14 @@
 {
   "name": "es6-data-structures",
+  "version": "0.0.0",
   "author": "Alexander Pilafian <sikanrong@gmail.com>",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
+
   "scripts": {
     "build": "babel esm --out-dir cjs",
     "prepublish": "npm run build",
+    "install": "npm run build",
     "test": "ava --tap test.js"
   },
 
