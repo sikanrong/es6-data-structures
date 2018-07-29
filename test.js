@@ -1,7 +1,7 @@
 import test from 'ava';
 import {BinaryTree, AVLTree, LinkedList, DoublyLinkedList, BinaryHeap} from './esm/index';
 import RandomSeed from 'random-seed';
-import DeterministicIdGenerator from './esm/util/deterministic_id';
+import {DeterministicUniqId} from 'deterministic-uniqid';
 
 const determinism_seed = "viscalaterralliure";
 const btree_size = 100; //in nodes
@@ -9,7 +9,7 @@ const node_value_upper = 10000000;
 
 var determinism = RandomSeed.create();
 determinism.seed(determinism_seed);
-const _dig = new DeterministicIdGenerator(determinism_seed);
+const _dig = new DeterministicUniqId(determinism_seed);
 const nodes_ar = [];
 
 //generate pseudo-random source data
