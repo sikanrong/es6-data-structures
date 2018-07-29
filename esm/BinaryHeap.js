@@ -55,6 +55,8 @@ export class BinaryHeap{
     }
 
     rebalanceUp(p){
+        if(p <= 0) //p is the root node, has no parent
+            return;
         var rebalanceRecursive = function (i) {
             var parentIdx = this.parentIndex(i);
             var iVal = this.heapArray[i];
