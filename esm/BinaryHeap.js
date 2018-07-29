@@ -6,7 +6,7 @@ export class BinaryHeap{
 
     build () {
         this.forEachParent( i => {
-            this.rebalance(i);
+            this.rebalanceDown(i);
         });
     }
 
@@ -30,7 +30,7 @@ export class BinaryHeap{
         return isValid;
     }
 
-    rebalance (fromNode) {
+    rebalanceDown (fromNode) {
         var rebalanceRecursive = function(i){
             var l = this.leftChildIndex(i);
             var r = this.rightChildIndex(i);
@@ -54,21 +54,32 @@ export class BinaryHeap{
         return rebalanceRecursive(fromNode);
     }
 
-    rebalanceUpFrom(p){
-        while(p !== undefined){
-            this.rebalance(p);
-            p = (p === 0)? undefined : this.parentIndex(p);
-        }
+    rebalanceUp(p){
+        var rebalanceRecursive = function (i) {
+            var parentIdx = this.parentIndex(i);
+            var iVal = this.heapArray[i];
+            var pVal = this.heapArray[parentIdx];
+
+            if(pVal < iVal){
+                this.heapArray[parentIdx] = iVal;
+                this.heapArray[i] = pVal;
+                if( parentIdx > 0 )
+                    return rebalanceRecursive(parentIdx);
+            }
+        }.bind(this);
+
+        return rebalanceRecursive(p);
     }
 
     remove(p){
         this.heapArray[p] = this.heapArray.pop();
-        this.rebalanceUpFrom(p);
+        this.rebalanceDown(p);
+        this.rebalanceUp(p);
     }
 
     insert(n) {
         this.heapArray.push(n);
-        this.rebalanceUpFrom(this.heapArray.length - 1);
+        this.rebalanceUp(this.heapArray.length - 1);
 
     }
 

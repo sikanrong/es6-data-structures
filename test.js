@@ -90,7 +90,7 @@ test('should correctly create a balanced AVLTree from the data', (t) => {
     t.true(avl.verify());
 });
 
-test("AVLTree should rebalance itself after a deletion leaves it in an AVL-unbalanced state", (t)=>{
+test("AVLTree should rebalanceDown itself after a deletion leaves it in an AVL-unbalanced state", (t)=>{
     nodes_ar.forEach(function (_n) {
         avl.delete(_n.key);
         t.falsy(avl.search(_n.key)); //node removed
@@ -213,17 +213,25 @@ test("BinaryHeap should correctly organize itself into a valid state", t => {
     t.true(heap.verify());
 });
 
-test("BinaryHeap should rebalance after insert", t => {
+test("BinaryHeap should rebalanceUp after insert", t => {
     var new_key = heap.heapArray[0] + 1;
     heap.insert(new_key);
     t.true(heap.verify());
     t.is(heap.heapArray[0], new_key, "new key bubbled up to the top of the heap");
 });
 
-test("BinaryHeap#delete should rebalance after insert", t => {
+test("BinaryHeap#delete should rebalance both down and up after deletion", t => {
     var toRemove = Math.floor(heap.heapArray.length / 2);
     var removedValue = heap.heapArray[toRemove];
     heap.remove(toRemove);
+    t.is(-1, heap.heapArray.indexOf(removedValue));
+    t.true(heap.verify());
+});
+
+test("BinaryHeap#delete should rebalanceDown after root deletion", t => {
+    var removedIndex = 0;
+    var removedValue = heap.heapArray[removedIndex];
+    heap.remove(removedIndex);
     t.is(-1, heap.heapArray.indexOf(removedValue));
     t.true(heap.verify());
 });
