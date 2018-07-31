@@ -1,9 +1,9 @@
 import test from 'ava';
-import {BinaryTree, AVLTree, LinkedList, DoublyLinkedList, BinaryHeap} from './esm/index';
+import {BinaryTree, AVLTree, LinkedList, DoublyLinkedList, BinaryHeap, MinimalPerfectHashTable} from './esm/index';
 import RandomSeed from 'random-seed';
 import {DeterministicUniqId} from 'deterministic-uniqid';
 
-const determinism_seed = "viscalaterralliure";
+const determinism_seed = "Ac1dBurnZeroCool";
 const btree_size = 100; //in nodes
 const node_value_upper = 10000000;
 
@@ -59,12 +59,12 @@ test('should correctly delete a key and reorganize the BSTree', (t) => {
     bst.delete(lastNode.key);
     t.true(bst.verify());
 
-    t.is(bst.root.key, 6875854);
+    t.is(bst.root.key, 6895060);
     bst.delete(firstNode.key);
 
     t.true(bst.verify());
     t.falsy(bst.search(lastNode.key), "node is no longer in the tree");
-    t.is(bst.root.key, 6998894, "the trees root node was correctly updated");
+    t.is(bst.root.key, 6993413, "the trees root node was correctly updated");
 });
 
 test('insert should correctly insert a node into the BSTree, and return the inserted node', t => {
@@ -234,4 +234,19 @@ test("BinaryHeap#delete should rebalanceDown after root deletion", t => {
     heap.remove(removedIndex);
     t.is(-1, heap.heapArray.indexOf(removedValue));
     t.true(heap.verify());
+});
+
+var mpht;
+var hash_data = {};
+nodes_ar.forEach(_n => {
+    hash_data[_n.value] = _n.key;
+});
+test("MinimalPerfectHashTable should properly construct a hashtable from the passed data", t => {
+    t.notThrows(() => {
+        mpht = new MinimalPerfectHashTable(hash_data);
+    });
+
+    Object.keys(hash_data).forEach(_k => {
+        t.is(mpht.get(_k), hash_data[_k]);
+    });
 });
