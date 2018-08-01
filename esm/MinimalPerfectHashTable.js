@@ -1,7 +1,7 @@
 //Alex Pilafian, 2018
 //Based on Steve Hanov python version: http://stevehanov.ca/blog/index.php?id=119
 
-//This article lays out the techniques in the my approach
+//This article lays out the techniques in my approach:
 //Edward A. Fox, Lenwood S. Heath, Qi Fan Chen and Amjad M. Daoud,
 //"Practical minimal perfect hash functions for large databases", CACM, 35(1):105-121
 
