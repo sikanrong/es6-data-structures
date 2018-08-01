@@ -1,5 +1,13 @@
 import test from 'ava';
-import {BinaryTree, AVLTree, LinkedList, DoublyLinkedList, BinaryHeap, MinimalPerfectHashTable} from './esm/index';
+import {
+    BinaryTree,
+    AVLTree,
+    LinkedList,
+    DoublyLinkedList,
+    BinaryHeap,
+    MinimalPerfectHashTable,
+    LomutoPerfectHashTable
+} from './esm/index';
 import RandomSeed from 'random-seed';
 import {DeterministicUniqId} from 'deterministic-uniqid';
 
@@ -236,17 +244,29 @@ test("BinaryHeap#delete should rebalanceDown after root deletion", t => {
     t.true(heap.verify());
 });
 
-var mpht;
+var mpht, lpht;
 var hash_data = {};
 nodes_ar.forEach(_n => {
     hash_data[_n.value] = _n.key;
 });
-test("MinimalPerfectHashTable should properly construct a hashtable from the passed data", t => {
+test("MinimalPerfectHashTable should construct the table and search all source data key-by-key to verify", t => {
     t.notThrows(() => {
         mpht = new MinimalPerfectHashTable(hash_data);
     });
 
     Object.keys(hash_data).forEach(_k => {
         t.is(mpht.get(_k), hash_data[_k]);
+    });
+});
+
+test("LomutoPerfectHashTable should construct hashtable and search all source data key-by-key to verify", t => {
+    t.notThrows(() => {
+        lpht = new LomutoPerfectHashTable(hash_data);
+    });
+
+    Object.keys(hash_data).forEach(_k => {
+        var actual = lpht.get(_k);
+        var expected = hash_data[_k];
+        t.is(expected, actual);
     });
 });

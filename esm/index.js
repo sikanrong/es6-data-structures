@@ -4,3 +4,4 @@ export {LinkedList} from './LinkedList';
 export {DoublyLinkedList} from './DoublyLinkedList';
 export {BinaryHeap} from './BinaryHeap';
 export {MinimalPerfectHashTable} from './MinimalPerfectHashTable';
+export {LomutoPerfectHashTable} from './LomutoPerfectHashTable'
