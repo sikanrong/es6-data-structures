@@ -4,14 +4,13 @@
   "author": "Alexander Pilafian <sikanrong@gmail.com>",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
-
+  "types": "./esm/index.d.ts",
   "scripts": {
     "build": "babel esm --out-dir cjs",
     "prepublish": "npm run build",
     "install": "npm run build",
     "test": "ava --tap test.js"
   },
-
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "ava": "^0.21.0",
@@ -22,7 +21,6 @@
     "random-seed": "^0.3.0",
     "deterministic-uniqid": "latest"
   },
-
   "babel": {
     "presets": [
       [
@@ -35,7 +33,6 @@
       ]
     ]
   },
-
   "ava": {
     "require": [
       "babel-register"
