@@ -25,6 +25,9 @@ export declare class BinaryTree {
     public constructor(source_ar: BTDatum[]);
     public constructor(source_ar: BTDatum[], nodeClass: Function);
 
+    public root: BinaryTreeNode;
+    public nodeClass: Function;
+
     public verify(): boolean;
     public insert(key: number, value: any): void;
     public traverseNodes(callback: Function): void;
